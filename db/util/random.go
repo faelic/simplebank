@@ -1,12 +1,26 @@
 package util
 
 import (
-	"fmt"
 	"math/rand"
+	"strings"
 )
 
+const alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+func RandomString(n int) string {
+	var sb strings.Builder
+	k := len(alphabet)
+
+	for i := 0; i < n; i++ {
+		c := alphabet[rand.Intn(k)]
+		sb.WriteByte(c)
+	}
+
+	return sb.String()
+}
+
 func RandomOwner() string {
-	return fmt.Sprintf("owner_%d", rand.Intn(1000000))
+	return RandomString(5)
 }
 
 func RandomMoney() int64 {
