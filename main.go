@@ -6,18 +6,18 @@ import (
 
 	"github.com/faelic/simplebank/api"
 	db "github.com/faelic/simplebank/db/sqlc"
+	"github.com/faelic/simplebank/db/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const (
-	dbSource      = "postgresql://favour:faelicdika@localhost:5432/simple_bank?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
-)
-
 func main() {
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("could not load config:", err)
+	}
 	ctx := context.Background()
 
-	connPool, err := pgxpool.New(ctx, dbSource)
+	connPool, err := pgxpool.New(ctx, config.DBSource)
 	if err != nil {
 		log.Fatal("could not connect to database:", err)
 	}
@@ -27,7 +27,7 @@ func main() {
 	store := db.NewStore(connPool)
 	server := api.NewServer(store)
 
-	err = server.Start(serverAddress)
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("could not start server", err)
 	}
