@@ -21,40 +21,6 @@ func NewStore(db *pgxpool.Pool) *Store {
 	}
 }
 
-// helper function
-// func addMoney(
-// 	ctx context.Context,
-// 	q *Queries,
-// 	accountID1 int64,
-// 	amount1 int64,
-// 	accountID2 int64,
-// 	amount2 int64,
-// ) (account1 Account, account2 Account, err error) {
-// 	account1ForUpdate, err := q.GetAccountForUpdate(ctx, accountID1)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	account1, err = q.UpdateAccount(ctx, UpdateAccountParams{
-// 		ID:      accountID1,
-// 		Balance: account1ForUpdate.Balance + amount1,
-// 	})
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	account2ForUpdate, err := q.GetAccountForUpdate(ctx, accountID2)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	account2, err = q.UpdateAccount(ctx, UpdateAccountParams{
-// 		ID:      accountID2,
-// 		Balance: account2ForUpdate.Balance + amount2,
-// 	})
-// 	return
-// }
-
 // executes a function within a database transaction
 func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, pgx.TxOptions{})
