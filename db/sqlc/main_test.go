@@ -11,7 +11,7 @@ import (
 )
 
 var testQueries *Queries
-var testStore *Store
+var testStore Store
 var testDB *pgxpool.Pool
 
 func TestMain(m *testing.M) {
