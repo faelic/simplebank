@@ -1,12 +1,15 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	db "github.com/faelic/simplebank/db/sqlc"
 	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/simplebank/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -26,4 +29,19 @@ func newTestServer(t *testing.T, store db.Store) *Server {
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
 	os.Exit(m.Run())
+}
+
+func addAuthorization(
+	t *testing.T,
+	request *http.Request,
+	tokenMaker token.Maker,
+	authorizationType string,
+	username string,
+	duration time.Duration,
+) {
+	token, err := tokenMaker.CreateToken(username, duration)
+	require.NoError(t, err)
+
+	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, token)
+	request.Header.Set(authorizationHeaderKey, authorizationHeader)
 }
