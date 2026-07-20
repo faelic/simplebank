@@ -1,5 +1,5 @@
 postgres:
-	docker run --name postgres18 -p 5432:5432 -e POSTGRES_USER=favour -e POSTGRES_PASSWORD=faelicdika -d postgres:18-bookworm
+	docker run --name postgres18 --network bank-network -p 5432:5432 -e POSTGRES_USER=favour -e POSTGRES_PASSWORD=faelicdika -d postgres:18-bookworm
 createdb:
 	docker exec -it postgres18 createdb --username=favour --owner=favour simple_bank
 
