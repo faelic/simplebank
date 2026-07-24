@@ -1,4 +1,4 @@
-module github.com/faelic/simplebank
+module github.com/faelic/monierave
 
 go 1.26.4
 

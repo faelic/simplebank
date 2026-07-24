@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/monierave/db/util"
 	"github.com/go-playground/validator/v10"
 )
 

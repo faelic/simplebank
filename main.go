@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/faelic/simplebank/api"
-	db "github.com/faelic/simplebank/db/sqlc"
-	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/monierave/api"
+	db "github.com/faelic/monierave/db/sqlc"
+	"github.com/faelic/monierave/db/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
