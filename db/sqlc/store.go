@@ -27,6 +27,8 @@ func NewStore(db *pgxpool.Pool) Store {
 	}
 }
 
+var ErrInsufficientBalance = errors.New("insufficient balance")
+
 // executes a function within a database transaction
 func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, pgx.TxOptions{})
@@ -58,18 +60,6 @@ type TransferTxResult struct {
 	ToAccount   Account  `json:"to_account"`
 	FromEntry   Entry    `json:"from_entry"`
 	ToEntry     Entry    `json:"to_entry"`
-}
-
-func checkBalance(q *Queries, ctx context.Context, id int64, amount int64) error {
-	account, err := q.GetAccount(ctx, id)
-	if err != nil {
-		return err
-	}
-	if account.Balance < amount {
-		err = errors.New("balance is less than amount")
-		return err
-	}
-	return nil
 }
 
 // transferTx performs a money transfer from one account to another
@@ -138,7 +128,11 @@ func addMoney(
 	})
 
 	if err != nil {
-		return
+		if errors.Is(err, pgx.ErrNoRows) && amount1 < 0 {
+			return account1, account2, ErrInsufficientBalance
+		}
+
+		return account1, account2, err
 	}
 
 	account2, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
@@ -147,8 +141,11 @@ func addMoney(
 	})
 
 	if err != nil {
-		return
-	}
+		if errors.Is(err, pgx.ErrNoRows) && amount2 < 0 {
+			return account1, account2, ErrInsufficientBalance
+		}
 
+		return account1, account2, ErrInsufficientBalance
+	}
 	return
 }

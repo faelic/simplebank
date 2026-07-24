@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/faelic/simplebank/db/util"
 	"github.com/stretchr/testify/require"
 )
@@ -112,4 +113,52 @@ func TestListAccount(t *testing.T) {
 		require.NotEmpty(t, account)
 		require.Equal(t, user.Username, account.Owner)
 	}
+}
+
+func TestAddAccountBalance(t *testing.T) {
+	account1 := createRandomAccount(t)
+
+	addedAmount := int64(50)
+	account2, err := testQueries.AddAccountBalance(context.Background(), AddAccountBalanceParams{
+		ID:     account1.ID,
+		Amount: addedAmount,
+	})
+	require.NoError(t, err)
+	require.Equal(t, account1.Balance+addedAmount, account2.Balance)
+
+	subtractedAmount := int64(-20)
+	account3, err := testQueries.AddAccountBalance(context.Background(), AddAccountBalanceParams{
+		ID:     account1.ID,
+		Amount: subtractedAmount,
+	})
+	require.NoError(t, err)
+	require.Equal(t, account2.Balance+subtractedAmount, account3.Balance)
+}
+
+func TestAddAccountBalanceInsufficientBalance(t *testing.T) {
+	account := createRandomAccount(t)
+
+	_, err := testQueries.AddAccountBalance(context.Background(), AddAccountBalanceParams{
+		ID:     account.ID,
+		Amount: -(account.Balance + 1),
+	})
+	require.Error(t, err)
+	require.ErrorIs(t, err, pgx.ErrNoRows)
+
+	updatedAccount, getErr := testQueries.GetAccount(context.Background(), account.ID)
+	require.NoError(t, getErr)
+	require.Equal(t, account.Balance, updatedAccount.Balance)
+}
+
+func TestGetAccountForUpdate(t *testing.T) {
+	account1 := createRandomAccount(t)
+	account2, err := testQueries.GetAccountForUpdate(context.Background(), account1.ID)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, account2)
+	require.Equal(t, account1.ID, account2.ID)
+	require.Equal(t, account1.Owner, account2.Owner)
+	require.Equal(t, account1.Balance, account2.Balance)
+	require.Equal(t, account1.Currency, account2.Currency)
+	require.WithinDuration(t, account1.CreatedAt.Time, account2.CreatedAt.Time, time.Second)
 }

@@ -179,3 +179,30 @@ func TestTransferTxDeadlock(t *testing.T) {
 	require.Equal(t, account1.Balance, updatedAccount1.Balance)
 	require.Equal(t, account2.Balance, updatedAccount2.Balance)
 }
+
+func TestTransferTxInsufficientBalance(t *testing.T) {
+	account1 := createTransferTestAccount(t)
+	account2 := createTransferTestAccount(t)
+
+	amount := account1.Balance + 1
+
+	result, err := testStore.TransferTx(context.Background(), TransferTxParams{
+		FromAccountID: account1.ID,
+		ToAccountID:   account2.ID,
+		Amount:        amount,
+	})
+
+	require.Error(t, err)
+	require.ErrorIs(t, err, ErrInsufficientBalance)
+	require.Empty(t, result.Transfer)
+	require.Empty(t, result.FromEntry)
+	require.Empty(t, result.ToEntry)
+
+	updatedAccount1, getErr := testQueries.GetAccount(context.Background(), account1.ID)
+	require.NoError(t, getErr)
+	require.Equal(t, account1.Balance, updatedAccount1.Balance)
+
+	updatedAccount2, getErr := testQueries.GetAccount(context.Background(), account2.ID)
+	require.NoError(t, getErr)
+	require.Equal(t, account2.Balance, updatedAccount2.Balance)
+}
