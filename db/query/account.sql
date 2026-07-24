@@ -34,6 +34,7 @@ RETURNING *;
 UPDATE accounts
 SET balance = balance + sqlc.arg(amount)
 WHERE id = sqlc.arg(id)
+  AND balance + sqlc.arg(amount) >= 0
 RETURNING *;
 
 -- name: DeleteAccount :exec
