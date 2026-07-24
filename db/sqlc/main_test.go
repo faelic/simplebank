@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/monierave/db/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

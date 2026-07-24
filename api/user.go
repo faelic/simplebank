@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	db "github.com/faelic/simplebank/db/sqlc"
-	"github.com/faelic/simplebank/db/util"
+	db "github.com/faelic/monierave/db/sqlc"
+	"github.com/faelic/monierave/db/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"

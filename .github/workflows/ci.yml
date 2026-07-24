@@ -15,9 +15,9 @@ jobs:
       postgres:
         image: postgres:18-bookworm
         env:
-          POSTGRES_USER: favour
-          POSTGRES_PASSWORD: faelicdika
-          POSTGRES_DB: simple_bank
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
@@ -42,6 +42,9 @@ jobs:
 
       - name: Create app.env
         run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> app.env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> app.env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> app.env
           echo "DB_SOURCE=${DB_SOURCE}" >> app.env
           echo "SERVER_ADDRESS=${SERVER_ADDRESS}" >> app.env
           echo "SECRET_KEY=${SECRET_KEY}" >> app.env

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/monierave/db/util"
 	"github.com/stretchr/testify/require"
 )
 

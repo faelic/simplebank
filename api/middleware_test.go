@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faelic/simplebank/db/util"
-	"github.com/faelic/simplebank/token"
+	"github.com/faelic/monierave/db/util"
+	"github.com/faelic/monierave/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )

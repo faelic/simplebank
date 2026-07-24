@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	db "github.com/faelic/simplebank/db/sqlc"
-	"github.com/faelic/simplebank/db/util"
-	"github.com/faelic/simplebank/token"
+	db "github.com/faelic/monierave/db/sqlc"
+	"github.com/faelic/monierave/db/util"
+	"github.com/faelic/monierave/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )

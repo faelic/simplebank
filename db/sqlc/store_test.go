@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/faelic/simplebank/db/util"
+	"github.com/faelic/monierave/db/util"
 	"github.com/stretchr/testify/require"
 )
 
