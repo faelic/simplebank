@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
@@ -59,6 +60,18 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
+func checkBalance(q *Queries, ctx context.Context, id int64, amount int64) error {
+	account, err := q.GetAccount(ctx, id)
+	if err != nil {
+		return err
+	}
+	if account.Balance < amount {
+		err = errors.New("balance is less than amount")
+		return err
+	}
+	return nil
+}
+
 // transferTx performs a money transfer from one account to another
 // it creates a transfer record, add account entries and updates account balance
 func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
@@ -101,6 +114,9 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 
 		} else {
 			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
+		}
+		if err != nil {
+			return err
 		}
 		return nil
 	})
